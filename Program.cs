@@ -1,6 +1,5 @@
-using AspectCore.Configuration;
-using AspectCore.Extensions.DependencyInjection;
 using AspectCore_Framework.Bugs;
+using Castle.DynamicProxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,15 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IBService,TestService>();
-builder.Services.AddSingleton<TestAopAttribute>();
-builder.Services.ConfigureDynamicProxy(config =>
-{
-    config.Interceptors.AddServiced<TestAopAttribute>(
-        Predicates.ForService("*Service")
-    );
-});
-builder.Host.UseServiceProviderFactory(new DynamicProxyServiceProviderFactory());
+builder.Services.AddSingleton(new ProxyGenerator());
+builder.Services.AddScoped<IInterceptor, TestAopInterceptor>();
+builder.Services.AddProxiedScoped<IBService, TestService>();
 
 var app = builder.Build();
 
