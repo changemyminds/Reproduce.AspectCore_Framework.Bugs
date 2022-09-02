@@ -7,9 +7,8 @@ namespace AspectCore_Framework.Bugs
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
             var className = context.Implementation.GetType().FullName;
-            var methodName1 = context.ServiceMethod.Name;
-            var methodName2 = context.ImplementationMethod.Name;
-            System.Console.WriteLine($"{className}, {methodName1}, {methodName2}");
+            var methodName = context.ServiceMethod.Name;
+            System.Console.WriteLine($"{className}, {methodName}");
             await next(context);
         }
     }
